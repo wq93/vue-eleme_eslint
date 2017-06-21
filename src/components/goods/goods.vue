@@ -21,7 +21,10 @@
           <li v-for="item in goods" class="food-list food-list-hook">
             <h1 class="title"> {{ item.name }} </h1>
             <ul>
-              <li v-for="food in item.foods" class="food-item border-1px">
+              <li
+                v-for="food in item.foods"
+                class="food-item border-1px"
+                @click="selectFood(food,$event)">
                 <div class="icon">
                   <img width="57px" height="57" :src="food.icon" alt="">
                 </div>
@@ -51,7 +54,8 @@
                 :delivery-price="seller.deliveryPrice"
                 :min-price="seller.minPrice"></shopcart>
     </div>
-    <!--<food :food="selectedFood" @add="getFood" ref="food"></food>-->
+    <!--food组件-->
+    <food :food="selectedFood" ref="food"></food>
   </div>
 </template>
 
@@ -59,6 +63,7 @@
   import BScroll from 'better-scroll';
   import shopcart from '../shopcart/shopcart.vue';
   import cartcontrol from '../cartcontrol/cartcontrol.vue';
+  import food from '../food/food.vue';
   const ERR_OK = 0;
   export default {
     props: {
@@ -121,7 +126,8 @@
       return {
         goods: [],
         listHeight: [], // 存放每个商品列表的高度
-        scrollY: 0  // 左边商品列表的排序
+        scrollY: 0,  // 左边商品列表的排序
+        selectedFood: {} // 点击查看详情的商品
       };
     },
     computed: {
@@ -177,6 +183,14 @@
         let el = foodList[index];
         this.foodsScroll.scrollToElement(el, 300);
       },
+      // 点击查看商品详情
+      selectFood(food, event) {
+        if (!event._constructed) {
+          return;
+        }
+        this.selectedFood = food;
+        this.$refs.food.show();
+      },
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
           click: true
@@ -210,10 +224,16 @@
         });
       }
     },
+    getFood(el) { // 商品详情页的添加
+      this.$nextTick(() => {
+        this.$refs.shopcart.drop(el);
+      });
+    },
     // 组件赋值
     components: {
       shopcart,
-      cartcontrol
+      cartcontrol,
+      food
     }
   };
 </script>
