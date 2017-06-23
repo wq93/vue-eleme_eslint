@@ -35,10 +35,7 @@
                     <span>月售{{food.sellCount}}份</span>
                     <span>好评率{{food.rating}}%</span>
                   </div>
-                  <div class="price">
-                    <span class="now">￥{{food.price}}</span>
-                    <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
-                  </div>
+                  <price :food="food"></price>
                   <div class="cartcontrol-wrapper">
                     <cartcontrol @event="getEvent" :food="food"></cartcontrol>
                   </div>
@@ -64,6 +61,7 @@
   import shopcart from '../shopcart/shopcart.vue';
   import cartcontrol from '../cartcontrol/cartcontrol.vue';
   import food from '../food/food.vue';
+  import price from '../price/price.vue';
   const ERR_OK = 0;
   export default {
     props: {
@@ -188,7 +186,7 @@
         if (!event._constructed) {
           return;
         }
-        this.selectedFood = food;
+        this.selectedFood = food; // 将点击的food赋值并传入food组件
         this.$refs.food.show();
       },
       _initScroll() {
@@ -233,7 +231,8 @@
     components: {
       shopcart,
       cartcontrol,
-      food
+      food,
+      price
     }
   };
 </script>
@@ -328,17 +327,6 @@
         .extra
           &:first-child
             margin-right: 12px
-        .price
-          font-weight: 700
-          line-height: 24px
-          .now
-            margin-right: 8px
-            font-size: 14px
-            color: rgb(240, 20, 20)
-          .old
-            text-decoration: line-through
-            font-size: 10px
-            color: rgb(147, 153, 159)
         .cartcontrol-wrapper
           position: absolute
           right: 0
