@@ -52,7 +52,7 @@
                 :min-price="seller.minPrice"></shopcart>
     </div>
     <!--food组件-->
-    <food :food="selectedFood" ref="food"></food>
+    <food :food="selectedFood" @add="getFood" ref="food"></food>
   </div>
 </template>
 
@@ -171,6 +171,11 @@
       });
     },
     methods: {
+      getFood(el) {
+        this.$nextTick(() => {
+          this.$refs.shopcart.drop(el);
+        });
+      },
       // 左边商品标题栏的点击事件
       selectMenu(index, $event) {
         // 阻止pc端默认事件触发
@@ -187,6 +192,7 @@
           return;
         }
         this.selectedFood = food; // 将点击的food赋值并传入food组件
+        console.log(this.selectedFood);
         this.$refs.food.show();
       },
       _initScroll() {
