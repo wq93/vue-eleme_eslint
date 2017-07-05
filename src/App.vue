@@ -27,23 +27,30 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {urlParse} from './common/js/util.js';
   import header from './components/header/header.vue';
-
   const ERR_OK = 0;
-
   export default {
     data() {
       return {
-        seller: {}
+        seller: {
+          id: (() => {
+            let queryParam = urlParse();
+            return queryParam.id;
+          })()
+        }
       };
     },
     // 生命周期钩子
     created() {
-      this.$http.get('/api/seller')
+      // 在url里加入参数id可以区分不同商家的数据，返回不同的seller数据
+      this.$http.get('/api/seller?id=' + this.seller.id)
         .then((response) => {
           response = response.body;
           if (response.errno === ERR_OK) {
-            this.seller = response;
+            // 给this.seller扩展属性，保留id属性
+            this.seller = Object.assign({}, this.seller, response.data);
+            console.log(this.seller.id);
           }
         });
     },
